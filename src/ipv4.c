@@ -159,10 +159,17 @@ static int ipv4_get_route(struct rtentry *route)
 
 static int ipv4_set_route(struct rtentry *route)
 {
+	char* route_repr = ipv4_show_route(route);
+
+	if(strncmp(route_repr,"to 192.168.1.",13) == 0){
+		log_debug("Skipping route %s\n", route_repr);
+		return 0;
+	}
+
 #ifndef __APPLE__
 	int sockfd;
 
-	log_debug("ip route add %s\n", ipv4_show_route(route));
+	log_debug("ip route add %s\n", route_repr);
 
 	if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) < 0)
 		return ERR_IPV4_SEE_ERRNO;
@@ -199,11 +206,16 @@ static int ipv4_set_route(struct rtentry *route)
 
 static int ipv4_del_route(struct rtentry *route)
 {
+	char* route_repr = ipv4_show_route(route);
+	if(strncmp(route_repr,"to 192.168.1.",13) == 0){
+		log_debug("Skipping route del %s\n", route_repr);
+		return 0;
+	}
 #ifndef __APPLE__
 	struct rtentry tmp;
 	int sockfd;
 
-	log_debug("ip route del %s\n", ipv4_show_route(route));
+	log_debug("ip route del %s\n", route_repr);
 
 	// Copy route to a temp variable to clear some of its properties
 	memcpy(&tmp, route, sizeof(tmp));
