@@ -1,5 +1,8 @@
+
 openfortivpn
 ============
+
+This fork prevents the route 192.168.1.0 to be pushed.
 
 openfortivpn is a client for PPP+SSL VPN tunnel services. It spawns a pppd
 process and operates the communication between the gateway and this process.
